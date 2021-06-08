@@ -12,11 +12,13 @@ const SpinningSelector = (props: Props) => {
       className={styles.container}
       style={{ "--spin-speed": props.spinSpeed, "--num-options": props.options.length }}
     >
-      {props.options.map((option, i) => (
-        <div key={i} className={styles.option} style={{ "--spin-index": i }}>
-          {option}
-        </div>
-      ))}
+      <div className={styles.optionsList}>
+        {props.options.map((option, i) => (
+          <div key={i} className={styles.option} style={{ "--spin-index": i }}>
+            {option}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
