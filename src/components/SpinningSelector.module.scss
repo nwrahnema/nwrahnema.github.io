@@ -1,7 +1,7 @@
 $pi: 3.141592653589793;
 
 :root {
-  --spin-duration: 2;
+  --spin-speed: 1;
   --spin-index: 0;
   --num-options: 1;
 }
@@ -9,7 +9,7 @@ $pi: 3.141592653589793;
 .container {
   position: relative;
   transform-style: preserve-3d;
-  animation: spinning-ring calc(1s * var(--spin-duration)) linear infinite;
+  animation: spinning-ring calc(1s * var(--num-options) / var(--spin-speed)) linear infinite;
 }
 
 .option {
