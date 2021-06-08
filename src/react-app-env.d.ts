@@ -6,6 +6,7 @@ declare module 'csstype' {
   interface Properties {
     // Add a CSS Custom Property
     '--spin-index'?: number;
-    '--spin-speed'?: string;
+    '--spin-duration'?: number;
+    '--num-options'?: number;
   }
 }

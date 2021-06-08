@@ -8,7 +8,12 @@ function App() {
         <div className={styles.title}>
           <div>This is</div>
           <SpinningSelector
-            options={["my website", "stupid", "spinny", "bongo"]}
+            options={[
+              "my website",
+              "stupid",
+              "spinny",
+              // "bongo", "a test", "us", "pog"
+            ]}
           ></SpinningSelector>
         </div>
       </header>
