@@ -1,7 +1,7 @@
 $pi: 3.141592653589793;
 
 :root {
-  --spin-duration: 10;
+  --spin-duration: 2;
   --spin-index: 0;
   --num-options: 1;
 }
@@ -16,7 +16,7 @@ $pi: 3.141592653589793;
   position: absolute;
   white-space: nowrap;
   backface-visibility: hidden;
-  transform-origin: left top;
+  transform-origin: left;
   transform: rotate(calc(360deg * (var(--spin-index) / var(--num-options))))
     translateX(calc(-1em * var(--num-options) / (2 * #{$pi}))) rotateY(90deg);
 }
