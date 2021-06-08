@@ -11,8 +11,13 @@ function App() {
             options={[
               "my website",
               "stupid",
-              "spinny",
-              // "bongo", "a test", "us", "pog"
+              "a test",
+              "silly",
+              "not funny",
+              "dumb",
+              "pointless",
+              "overengineered",
+              "a waste of time",
             ]}
           ></SpinningSelector>
         </div>

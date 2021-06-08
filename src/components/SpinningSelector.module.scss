@@ -16,7 +16,7 @@ $pi: 3.141592653589793;
   position: absolute;
   white-space: nowrap;
   backface-visibility: hidden;
-  transform-origin: left;
+  transform-origin: left top;
   transform: rotate(calc(360deg * (var(--spin-index) / var(--num-options))))
     translateX(calc(-1em * var(--num-options) / (2 * #{$pi}))) rotateY(90deg);
 }
