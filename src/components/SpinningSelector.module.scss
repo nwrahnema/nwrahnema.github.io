@@ -10,7 +10,7 @@ $pi: 3.141592653589793;
   --radius: calc(1em * var(--num-options) / (2 * #{$pi}));
 
   position: relative;
-  height: calc(var(--radius) * 2);
+  clip-path: polygon(0 -1em, 100vw -1em, 100vw 1em, 0 1em);
 }
 
 .optionsList {
