@@ -14,23 +14,14 @@ $pi: 3.141592653589793;
 .optionsList {
   position: absolute;
   transform-style: preserve-3d;
-  animation: spinning-ring calc(1s * var(--num-options) / var(--spin-speed)) linear infinite;
 }
 
 .option {
   position: absolute;
   top: -0.5em;
   white-space: nowrap;
+  cursor: pointer;
   backface-visibility: hidden;
   transform: rotateX(calc(360deg * (var(--spin-index) / var(--num-options))))
     translateY(calc(-1em * var(--num-options) / (2 * #{$pi}))) rotateX(90deg);
-}
-
-@keyframes spinning-ring {
-  0% {
-    transform: rotateX(0);
-  }
-  100% {
-    transform: rotateX(-360deg);
-  }
 }
