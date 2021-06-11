@@ -8,7 +8,7 @@ $pi: 3.141592653589793;
 
 .container {
   position: relative;
-  clip-path: polygon(0 -1em, 100vw -1em, 100vw 1em, 0 1em);
+  clip-path: polygon(0 -1.5em, 100vw -1.5em, 100vw 1.5em, 0 1.5em);
 }
 
 .optionsList {
@@ -18,10 +18,11 @@ $pi: 3.141592653589793;
 
 .option {
   position: absolute;
+  line-height: 1em;
   top: -0.5em;
   white-space: nowrap;
   cursor: pointer;
   backface-visibility: hidden;
   transform: rotateX(calc(360deg * (var(--spin-index) / var(--num-options))))
-    translateY(calc(-1em * var(--num-options) / (2 * #{$pi}))) rotateX(90deg);
+    translateZ(calc(1em * var(--num-options) / (2 * #{$pi})));
 }

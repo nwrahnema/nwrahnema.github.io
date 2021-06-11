@@ -1,16 +1,36 @@
 import styles from "./SpinningSelector.module.scss";
-import useWebAnimations from "@wellyshen/use-web-animations";
-import { useState } from "react";
+import useWebAnimations, { AnimateOptions } from "@wellyshen/use-web-animations";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   spinSpeed?: number;
   options: string[];
 };
 
-const SpinningSelector = (props: Props) => {
-  const [isSpinning, setIsSpinning] = useState(true);
+/**
+ * Animation for starting the spinner from a stopped position. `start` is a ratio
+ * between 0 and 1 indicating the percentage of a full rotation to start at.
+ */
+const startSpinAnimation = (props: Props, start: number): AnimateOptions => {
+  return {
+    id: "startSpin",
+    keyframes: {
+      transform: [`rotateX(${start * -360}deg)`, "rotateX(-360deg)"],
+    },
+    animationOptions: {
+      duration: (1000 * props.options.length) / (props.spinSpeed || 10),
+      easing: "ease-in",
+      iterations: 1,
+    },
+  };
+};
 
-  const { ref, getAnimation } = useWebAnimations<HTMLDivElement>({
+/**
+ * Animation for the spinner in motion.
+ */
+const spinAnimation = (props: Props): AnimateOptions => {
+  return {
+    id: "spin",
     keyframes: {
       transform: ["rotateX(0)", "rotateX(-360deg)"],
     },
@@ -18,12 +38,64 @@ const SpinningSelector = (props: Props) => {
       duration: (1000 * props.options.length) / (props.spinSpeed || 10),
       iterations: Infinity,
     },
+  };
+};
+
+/**
+ * Animation for stopping the spinner. `start` and `end` are ratios between
+ * 0 and 1 indicating the percentage of a full rotation to start and end at.
+ */
+const stopSpinAnimation = (props: Props, start: number, end: number): AnimateOptions => {
+  if (start >= end) {
+    end += 1;
+  }
+
+  return {
+    id: "stopSpin",
+    keyframes: {
+      transform: [`rotateX(${start * -360}deg)`, `rotateX(${end * -360}deg)`],
+    },
+    animationOptions: {
+      duration: (1000 * props.options.length) / (props.spinSpeed || 10),
+      easing: "ease-out",
+      fill: "forwards",
+      iterations: 1,
+    },
+  };
+};
+
+const SpinningSelector = (props: Props) => {
+  const [selected, setSelected] = useState<string | undefined>(undefined);
+  const stoppedAt = useRef(0);
+
+  const { ref, animate, getAnimation } = useWebAnimations<HTMLDivElement>({
+    onFinish: ({ animate, animation }) => {
+      // Chain spinAnimation to the end of startSpinAnimation
+      if (animation.id === "startSpin") {
+        animate(spinAnimation(props));
+      }
+    },
   });
 
-  const toggleSpinning = () => {
-    getAnimation()?.updatePlaybackRate(isSpinning ? 0 : 1);
-    setIsSpinning(!isSpinning);
-  };
+  useEffect(() => {
+    if (selected) {
+      const animation = getAnimation();
+      const currentTime = animation?.currentTime;
+      const iterationDuration = animation?.effect?.getComputedTiming().duration as number;
+      if (currentTime && iterationDuration) {
+        stoppedAt.current = props.options.indexOf(selected) / props.options.length;
+        animate(
+          stopSpinAnimation(
+            props,
+            (currentTime % iterationDuration) / iterationDuration,
+            stoppedAt.current
+          )
+        );
+      }
+    } else {
+      animate(startSpinAnimation(props, stoppedAt.current));
+    }
+  }, [animate, getAnimation, props, selected]);
 
   return (
     <div
@@ -35,7 +107,9 @@ const SpinningSelector = (props: Props) => {
           <div
             key={i}
             className={styles.option}
-            onMouseDown={toggleSpinning}
+            onMouseDown={() => {
+              selected ? setSelected(undefined) : setSelected(option);
+            }}
             style={{ "--spin-index": i }}
           >
             {option}
