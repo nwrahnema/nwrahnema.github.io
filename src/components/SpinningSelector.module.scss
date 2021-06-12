@@ -8,11 +8,12 @@ $pi: 3.141592653589793;
 
 .container {
   position: relative;
-  clip-path: polygon(0 -1.5em, 100vw -1.5em, 100vw 1.5em, 0 1.5em);
+  clip-path: polygon(0 -100%, 100% -100%, 100% 200%, 0 200%);
 }
 
 .optionsList {
   position: absolute;
+  top: 50%;
   transform-style: preserve-3d;
 }
 
@@ -25,4 +26,16 @@ $pi: 3.141592653589793;
   backface-visibility: hidden;
   transform: rotateX(calc(360deg * (var(--spin-index) / var(--num-options))))
     translateZ(calc(1em * var(--num-options) / (2 * #{$pi})));
+}
+
+.placeholderList {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.placeholder {
+  grid-row-start: 1;
+  grid-column-start: 1;
+  opacity: 0;
+  pointer-events: none;
 }

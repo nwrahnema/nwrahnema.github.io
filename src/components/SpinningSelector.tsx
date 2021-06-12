@@ -116,6 +116,13 @@ const SpinningSelector = (props: Props) => {
           </div>
         ))}
       </div>
+      <div className={styles.placeholderList}>
+        {props.options.map((option, i) => (
+          <div aria-hidden="true" className={styles.placeholder} key={i}>
+            {option}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
