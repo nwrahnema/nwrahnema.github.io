@@ -70,8 +70,9 @@ const SpinningSelector = (props: Props) => {
 
   const { ref, animate, getAnimation } = useWebAnimations<HTMLDivElement>({
     onFinish: ({ animate, animation }) => {
-      // Chain spinAnimation to the end of startSpinAnimation
-      if (animation.id === "startSpin") {
+      // Chain spin to the end of startSpin if startSpin is the currently running
+      // animation
+      if (animation.id === "startSpin" && animation.id === getAnimation()?.id) {
         animate(spinAnimation(props));
       }
     },
