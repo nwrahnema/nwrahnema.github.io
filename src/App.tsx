@@ -19,7 +19,6 @@ function App() {
               "overengineered",
               "a waste of time",
             ]}
-            spinSpeed={10}
           ></SpinningSelector>
         </div>
       </header>

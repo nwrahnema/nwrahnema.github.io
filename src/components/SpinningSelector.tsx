@@ -8,7 +8,7 @@ type Props = {
   options: string[];
 };
 
-const SpinningSelector = (props: Props) => {
+const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
   const [selected, setSelected] = useState<string | undefined>(undefined);
 
   const { ref, animate, getAnimation } = useWebAnimations<HTMLDivElement>({
@@ -22,7 +22,7 @@ const SpinningSelector = (props: Props) => {
             transform: ["rotateX(0deg)", "rotateX(-360deg)"],
           },
           animationOptions: {
-            duration: (1000 * props.options.length) / (props.spinSpeed || 10),
+            duration: (1000 * options.length) / spinSpeed,
             iterations: Infinity,
           },
         });
@@ -34,7 +34,7 @@ const SpinningSelector = (props: Props) => {
     let curPosition = getXRotation(ref);
     if (curPosition !== undefined) {
       if (selected !== undefined) {
-        let endPosition = (props.options.indexOf(selected) / props.options.length) * -360;
+        let endPosition = (options.indexOf(selected) / options.length) * -360;
         if (endPosition > curPosition) {
           endPosition -= 360;
         }
@@ -44,7 +44,7 @@ const SpinningSelector = (props: Props) => {
             transform: [`rotateX(${curPosition}deg)`, `rotateX(${endPosition}deg)`],
           },
           animationOptions: {
-            duration: (1000 * props.options.length) / (props.spinSpeed || 10),
+            duration: (1000 * options.length) / spinSpeed,
             easing: "ease-out",
             fill: "forwards",
             iterations: 1,
@@ -57,22 +57,22 @@ const SpinningSelector = (props: Props) => {
             transform: [`rotateX(${curPosition}deg)`, "rotateX(-360deg)"],
           },
           animationOptions: {
-            duration: (1000 * props.options.length) / (props.spinSpeed || 10),
+            duration: (1000 * options.length) / spinSpeed,
             easing: "ease-in",
             iterations: 1,
           },
         });
       }
     }
-  }, [animate, getAnimation, props, ref, selected]);
+  }, [animate, getAnimation, options, spinSpeed, ref, selected]);
 
   return (
     <div
       className={styles.container}
-      style={{ "--spin-speed": props.spinSpeed, "--num-options": props.options.length }}
+      style={{ "--spin-speed": spinSpeed, "--num-options": options.length }}
     >
       <div className={styles.optionsList} ref={ref}>
-        {props.options.map((option, i) => (
+        {options.map((option, i) => (
           <div
             key={i}
             className={styles.option}
@@ -86,7 +86,7 @@ const SpinningSelector = (props: Props) => {
         ))}
       </div>
       <div className={styles.placeholderList}>
-        {props.options.map((option, i) => (
+        {options.map((option, i) => (
           <div aria-hidden="true" className={styles.placeholder} key={i}>
             {option}
           </div>
