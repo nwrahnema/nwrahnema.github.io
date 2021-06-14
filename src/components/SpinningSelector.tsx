@@ -36,7 +36,7 @@ const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
   });
 
   useEffect(() => {
-    let curPosition = getXRotation(ref);
+    const curPosition = getXRotation(ref);
     if (curPosition !== undefined) {
       if (selected !== undefined) {
         let endPosition = (options.indexOf(selected) / options.length) * -360;
