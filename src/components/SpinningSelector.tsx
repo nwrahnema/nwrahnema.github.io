@@ -13,9 +13,14 @@ const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
 
   const { ref, animate, getAnimation } = useWebAnimations<HTMLDivElement>({
     onFinish: ({ animate, animation }) => {
+      const curAnimation = getAnimation();
       // Chain spin animation to the end of startSpin animation only if it has not been
       // replaced by another animation
-      if (animation.id === "startSpin" && getAnimation()?.playState === "finished") {
+      if (
+        animation.id === "startSpin" &&
+        curAnimation?.id === "startSpin" &&
+        curAnimation?.playState === "finished"
+      ) {
         animate({
           id: "spin",
           keyframes: {
@@ -35,7 +40,7 @@ const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
     if (curPosition !== undefined) {
       if (selected !== undefined) {
         let endPosition = (options.indexOf(selected) / options.length) * -360;
-        if (endPosition > curPosition) {
+        if (endPosition >= curPosition) {
           endPosition -= 360;
         }
         animate({
@@ -85,6 +90,7 @@ const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
           </div>
         ))}
       </div>
+      {/* This gives the SpinningSelector the correct width */}
       <div className={styles.placeholderList}>
         {options.map((option, i) => (
           <div aria-hidden="true" className={styles.placeholder} key={i}>

@@ -17,11 +17,24 @@ export function getXRotation<T extends HTMLElement>(ref: RefObject<T>): number |
     return 0;
   }
   
-  // rotation matrix - https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotateX()
   
   const values = tr.split('(')[1].split(')')[0].split(',');
-  const cosx = parseFloat(values[5]);
-  const sinx = parseFloat(values[9]);
+  let cosx = 0;
+  let sinx = 0;
+  switch (tr.split('(')[0]) {
+    case "matrix":
+      // 2d matrix - https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/matrix()
+      cosx = parseFloat(values[3]);
+      sinx = 0;
+      break;
+    case "matrix3d":
+      // 3d rotation matrix - https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotateX()
+      cosx = parseFloat(values[5]);
+      sinx = parseFloat(values[9]);
+      break;
+    default:
+      console.error(`Transform value ${tr} was not recognized.`)
+  }
   
   return Math.round(Math.atan2(sinx, cosx) * (-180/Math.PI));
 }
