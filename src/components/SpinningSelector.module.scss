@@ -8,7 +8,8 @@ $pi: 3.141592653589793;
 
 .container {
   position: relative;
-  clip-path: polygon(0 -100%, 100% -100%, 100% 200%, 0 200%);
+  height: 3em;
+  mask-image: linear-gradient(to top, transparent, black 35% 65%, transparent);
 }
 
 .optionsList {
