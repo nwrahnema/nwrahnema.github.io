@@ -1,16 +1,23 @@
 import styles from "./SpinningSelector.module.scss";
 import useWebAnimations from "@wellyshen/use-web-animations";
-import { useEffect, useState } from "react";
+import { useEffect, MouseEvent } from "react";
 import { getXRotation } from "../utils";
 
 type Props = {
+  selected?: string;
   spinSpeed?: number;
+  onMouseDown?: (e: MouseEvent) => void;
+  onMouseMove?: (e: MouseEvent) => void;
   options: string[];
 };
 
-const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
-  const [selected, setSelected] = useState<string | undefined>(undefined);
-
+const SpinningSelector = ({
+  selected,
+  spinSpeed = 10,
+  onMouseDown,
+  onMouseMove,
+  options,
+}: Props) => {
   const { ref, animate, getAnimation } = useWebAnimations<HTMLDivElement>({
     onFinish: ({ animate, animation }) => {
       const curAnimation = getAnimation();
@@ -39,7 +46,12 @@ const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
     const curPosition = getXRotation(ref);
     if (curPosition !== undefined) {
       if (selected !== undefined) {
-        let endPosition = (options.indexOf(selected) / options.length) * -360;
+        const selectedIndex = options.indexOf(selected);
+        if (selectedIndex < 0) {
+          console.error(`Selected value ${selected} is not present in 'options' array.`);
+          return;
+        }
+        let endPosition = (selectedIndex / options.length) * -360;
         if (endPosition >= curPosition) {
           endPosition -= 360;
         }
@@ -74,6 +86,7 @@ const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
   return (
     <div
       className={styles.container}
+      onMouseMove={onMouseMove}
       style={{ "--spin-speed": spinSpeed, "--num-options": options.length }}
     >
       <div className={styles.optionsList} ref={ref}>
@@ -81,9 +94,7 @@ const SpinningSelector = ({ spinSpeed = 10, options }: Props) => {
           <div
             key={i}
             className={styles.option}
-            onMouseDown={() => {
-              selected ? setSelected(undefined) : setSelected(option);
-            }}
+            onMouseDown={onMouseDown}
             style={{ "--spin-index": i }}
           >
             {option}
