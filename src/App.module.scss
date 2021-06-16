@@ -1,21 +1,49 @@
-.app {
-  text-align: center;
+.page {
+  height: 100vh;
+  display: grid;
+  grid-template-areas:
+    ".    header ."
+    "main main   main";
+  grid-template-columns: 10em 1fr 10em;
+  grid-template-rows: 5em 1fr;
+  color: white;
+  background-color: #282c34;
 }
 
-.appHeader {
-  background-color: #282c34;
-  min-height: 100vh;
+/** Header styles **/
+
+.header {
+  grid-area: header;
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.socials {
+  display: flex;
+  gap: 1em;
+
+  a {
+    color: inherit;
+  }
+}
+
+/** Main content styles **/
+
+.main {
+  grid-area: main;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.title {
+.headline {
   display: flex;
   align-items: center;
   flex-direction: row;
   justify-content: center;
+  text-align: center;
   font-size: calc(2em + 2vmin);
-  color: white;
   gap: 1ch;
 }
