@@ -37,6 +37,12 @@ function App() {
     setSelected(value);
   };
 
+  const pickRandomOption = () => {
+    const randomOptionsDiff = randomOptions.filter((value) => value !== selected);
+
+    return randomOptionsDiff[Math.floor(Math.random() * randomOptionsDiff.length)];
+  };
+
   return (
     <div className={styles.page} onMouseMove={spinSpinner}>
       <header className={styles.header}>
@@ -68,16 +74,8 @@ function App() {
         <div className={styles.headline}>
           <span>This is</span>
           <SpinningSelector
-            onMouseDown={() => {
-              const randomOptionsDiff = [...randomOptions];
-              if (selected !== undefined) {
-                randomOptionsDiff.splice(randomOptionsDiff.indexOf(selected), 1);
-              }
-              setSelected(randomOptionsDiff[Math.floor(Math.random() * randomOptionsDiff.length)]);
-            }}
-            onMouseMove={(e) => {
-              stopSpinner(e, selected ?? interactiveOptions.spinner);
-            }}
+            onMouseDown={(e) => stopSpinner(e, pickRandomOption())}
+            onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}
             options={Object.values(interactiveOptions).concat(randomOptions)}
             selected={selected}
           ></SpinningSelector>
