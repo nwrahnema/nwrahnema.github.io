@@ -20,13 +20,17 @@ const randomOptions = [
 function App() {
   const [selected, setSelected] = useState<string | undefined>(undefined);
 
+  const spinSpinner = () => {
+    setSelected(undefined);
+  };
+
   const stopSpinner = (e: MouseEvent, value: string) => {
     e.stopPropagation();
     setSelected(value);
   };
 
   return (
-    <div className={styles.page} onMouseMove={() => setSelected(undefined)}>
+    <div className={styles.page} onMouseMove={spinSpinner}>
       <header className={styles.header}>
         <div className={styles.title} onMouseMove={(e) => stopSpinner(e, "my name")}>
           Nima Rahnema
@@ -57,7 +61,13 @@ function App() {
               }
               setSelected(randomOptionsDiff[Math.floor(Math.random() * randomOptionsDiff.length)]);
             }}
-            onMouseMove={(e) => stopSpinner(e, "a spinny thing")}
+            onMouseMove={(e) => {
+              if (selected) {
+                stopSpinner(e, selected);
+              } else {
+                stopSpinner(e, "a spinny thing");
+              }
+            }}
             options={["my GitHub", "a spinny thing", "my LinkedIn", "my name", "my email"].concat(
               randomOptions
             )}
