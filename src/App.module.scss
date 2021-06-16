@@ -10,6 +10,15 @@
   background-color: #282c34;
 }
 
+@media only screen and (max-width: 900px) {
+  .page {
+    grid-template-areas:
+      "header header header"
+      "main   main   main";
+    padding: 0 1em;
+  }
+}
+
 /** Header styles **/
 
 .header {

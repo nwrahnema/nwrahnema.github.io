@@ -17,6 +17,14 @@ const randomOptions = [
   "a waste of time",
 ];
 
+const interactiveOptions = {
+  name: "my name",
+  email: "my email",
+  github: "my GitHub",
+  linkedin: "my LinkedIn",
+  spinner: "a spinny thing",
+};
+
 function App() {
   const [selected, setSelected] = useState<string | undefined>(undefined);
 
@@ -32,19 +40,25 @@ function App() {
   return (
     <div className={styles.page} onMouseMove={spinSpinner}>
       <header className={styles.header}>
-        <div className={styles.title} onMouseMove={(e) => stopSpinner(e, "my name")}>
+        <div className={styles.title} onMouseMove={(e) => stopSpinner(e, interactiveOptions.name)}>
           Nima Rahnema
         </div>
         <div className={styles.socials}>
-          <a href="mailto:nwrahnema@gmail.com" onMouseMove={(e) => stopSpinner(e, "my email")}>
+          <a
+            href="mailto:nwrahnema@gmail.com"
+            onMouseMove={(e) => stopSpinner(e, interactiveOptions.email)}
+          >
             <FontAwesomeIcon icon={faEnvelope} />
           </a>
-          <a href="https://github.com/nwrahnema" onMouseMove={(e) => stopSpinner(e, "my GitHub")}>
+          <a
+            href="https://github.com/nwrahnema"
+            onMouseMove={(e) => stopSpinner(e, interactiveOptions.github)}
+          >
             <FontAwesomeIcon icon={faGithub} />
           </a>
           <a
             href="https://linkedin.com/in/nima-rahnema"
-            onMouseMove={(e) => stopSpinner(e, "my LinkedIn")}
+            onMouseMove={(e) => stopSpinner(e, interactiveOptions.linkedin)}
           >
             <FontAwesomeIcon icon={faLinkedin} />
           </a>
@@ -52,7 +66,7 @@ function App() {
       </header>
       <div className={styles.main}>
         <div className={styles.headline}>
-          <div>This is</div>
+          <span>This is</span>
           <SpinningSelector
             onMouseDown={() => {
               const randomOptionsDiff = [...randomOptions];
@@ -62,15 +76,9 @@ function App() {
               setSelected(randomOptionsDiff[Math.floor(Math.random() * randomOptionsDiff.length)]);
             }}
             onMouseMove={(e) => {
-              if (selected) {
-                stopSpinner(e, selected);
-              } else {
-                stopSpinner(e, "a spinny thing");
-              }
+              stopSpinner(e, selected ?? interactiveOptions.spinner);
             }}
-            options={["my GitHub", "a spinny thing", "my LinkedIn", "my name", "my email"].concat(
-              randomOptions
-            )}
+            options={Object.values(interactiveOptions).concat(randomOptions)}
             selected={selected}
           ></SpinningSelector>
         </div>
