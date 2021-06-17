@@ -52,18 +52,21 @@ function App() {
         <div className={styles.socials}>
           <a
             href="mailto:nwrahnema@gmail.com"
+            title="Email"
             onMouseMove={(e) => stopSpinner(e, interactiveOptions.email)}
           >
             <FontAwesomeIcon icon={faEnvelope} />
           </a>
           <a
             href="https://github.com/nwrahnema"
+            title="GitHub"
             onMouseMove={(e) => stopSpinner(e, interactiveOptions.github)}
           >
             <FontAwesomeIcon icon={faGithub} />
           </a>
           <a
             href="https://linkedin.com/in/nima-rahnema"
+            title="LinkedIn"
             onMouseMove={(e) => stopSpinner(e, interactiveOptions.linkedin)}
           >
             <FontAwesomeIcon icon={faLinkedin} />

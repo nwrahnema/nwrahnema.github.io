@@ -4,18 +4,15 @@
   grid-template-areas:
     ".    header ."
     "main main   main";
-  grid-template-columns: 10em 1fr 10em;
-  grid-template-rows: 5em 1fr;
+  grid-template-columns: 10rem 1fr 10rem;
+  grid-template-rows: 5rem 1fr;
   color: white;
   background-color: #282c34;
 }
 
 @media only screen and (max-width: 900px) {
   .page {
-    grid-template-areas:
-      "header header header"
-      "main   main   main";
-    padding: 0 1em;
+    grid-template-columns: 1rem 1fr 1rem;
   }
 }
 
@@ -23,7 +20,8 @@
 
 .header {
   grid-area: header;
-  font-size: 1.5em;
+  font-size: clamp(1rem, 5vw, 1.5rem);
+  white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -53,6 +51,7 @@
   flex-direction: row;
   justify-content: center;
   text-align: center;
-  font-size: calc(2em + 2vmin);
+  white-space: nowrap;
+  font-size: clamp(1rem, 5vw, 3rem);
   gap: 1ch;
 }
