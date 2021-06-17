@@ -20,20 +20,16 @@
 
 .header {
   grid-area: header;
-  font-size: clamp(1rem, 5vw, 1.5rem);
+  font-size: 1.5rem;
   white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.socials {
-  display: flex;
-  gap: 1em;
-
-  a {
-    color: inherit;
-  }
+.socials a {
+  color: inherit;
+  margin-left: 1em;
 }
 
 /** Main content styles **/
@@ -53,5 +49,8 @@
   text-align: center;
   white-space: nowrap;
   font-size: clamp(1rem, 5vw, 3rem);
-  gap: 1ch;
+
+  & > span {
+    margin-right: 1ch;
+  }
 }
