@@ -77,7 +77,7 @@ function App() {
           <SpinningSelector
             onMouseDown={(e) => stopSpinner(e, pickRandomOption())}
             onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}
-            options={Object.values(interactiveOptions).concat(randomOptions)}
+            options={randomOptions.concat(Object.values(interactiveOptions))}
             selected={selected}
           ></SpinningSelector>
         </div>
