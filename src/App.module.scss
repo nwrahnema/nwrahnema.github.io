@@ -25,6 +25,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  .title {
+    font-weight: lighter;
+  }
 }
 
 .socials a {

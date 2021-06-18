@@ -7,22 +7,20 @@ import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
 const randomOptions = [
   "my website",
-  "stupid",
+  "in progress",
   "a test",
   "silly",
-  "not funny",
-  "dumb",
-  "pointless",
+  "made in React",
   "overengineered",
-  "a waste of time",
+  "sparta",
+  "a wheel",
 ];
 
 const interactiveOptions = {
+  github: "my GitHub",
   name: "my name",
   email: "my email",
-  github: "my GitHub",
   linkedin: "my LinkedIn",
-  spinner: "a spinny thing",
 };
 
 function App() {
