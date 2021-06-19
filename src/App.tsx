@@ -44,9 +44,13 @@ function App() {
   return (
     <div className={styles.page} onMouseMove={spinSpinner}>
       <header className={styles.header}>
-        <div className={styles.title} onMouseMove={(e) => stopSpinner(e, interactiveOptions.name)}>
+        <a
+          className={styles.title}
+          href="/"
+          onMouseMove={(e) => stopSpinner(e, interactiveOptions.name)}
+        >
           Nima Rahnema
-        </div>
+        </a>
         <div className={styles.socials}>
           <a
             href="mailto:nwrahnema@gmail.com"
@@ -57,6 +61,8 @@ function App() {
           </a>
           <a
             href="https://github.com/nwrahnema"
+            target="_blank"
+            rel="noopener noreferrer"
             title="GitHub"
             onMouseMove={(e) => stopSpinner(e, interactiveOptions.github)}
           >
@@ -64,6 +70,8 @@ function App() {
           </a>
           <a
             href="https://linkedin.com/in/nima-rahnema"
+            target="_blank"
+            rel="noopener noreferrer"
             title="LinkedIn"
             onMouseMove={(e) => stopSpinner(e, interactiveOptions.linkedin)}
           >
@@ -71,17 +79,27 @@ function App() {
           </a>
         </div>
       </header>
-      <div className={styles.main}>
-        <div className={styles.headline}>
-          <span>This is</span>
-          <SpinningSelector
-            onMouseDown={(e) => stopSpinner(e, pickRandomOption())}
-            onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}
-            options={randomOptions.concat(Object.values(interactiveOptions))}
-            selected={selected}
-          ></SpinningSelector>
-        </div>
+      <div className={styles.headline}>
+        <span>This is</span>
+        <SpinningSelector
+          onMouseDown={(e) => stopSpinner(e, pickRandomOption())}
+          onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}
+          options={randomOptions.concat(Object.values(interactiveOptions))}
+          selected={selected}
+        ></SpinningSelector>
       </div>
+      <main className={styles.main}>
+        <section className={styles.aboutMe}>
+          <h2>About Me</h2>
+          <p>
+            I'm a Software Engineer from Toronto. I graduated from the{" "}
+            <a href="https://uwaterloo.ca/" target="_blank" rel="noopener noreferrer">
+              University of Waterloo
+            </a>{" "}
+            with a Bachelor's of Computer Science.
+          </p>
+        </section>
+      </main>
     </div>
   );
 }
