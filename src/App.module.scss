@@ -1,6 +1,6 @@
-:root {
-  --clr-link: rgb(17, 141, 223);
-}
+$link-colour: rgb(17, 141, 223);
+$background-colour: rgb(40, 44, 52);
+$text-colour: white;
 
 .page {
   display: grid;
@@ -10,8 +10,8 @@
     "main    main    main";
   grid-template-columns: 10rem 1fr 10rem;
   grid-template-rows: 5rem calc(100vh - 5rem) 1fr;
-  color: white;
-  background-color: #282c34;
+  color: $text-colour;
+  background-color: $background-colour;
 }
 
 @media only screen and (max-width: 900px) {
@@ -29,6 +29,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  z-index: 2;
 
   a {
     color: inherit;
@@ -51,9 +52,12 @@
   display: flex;
   align-items: center;
   position: sticky;
-  top: 2em;
+  top: 1.5em;
   white-space: nowrap;
   font-size: clamp(1.7rem, 6vw, 3rem);
+  padding: 0.5em;
+  background: $background-colour;
+  z-index: 99;
 
   & > span {
     margin-right: 1ch;
@@ -66,6 +70,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 
   .aboutMe {
     display: flex;
@@ -75,7 +80,7 @@
     width: 60ch;
 
     a {
-      color: var(--clr-link);
+      color: $link-colour;
       text-decoration: none;
     }
   }
