@@ -11,7 +11,6 @@ const randomOptions = [
   "silly",
   "made in React",
   "overengineered",
-  "sparta",
   "a wheel",
 ];
 
@@ -90,12 +89,14 @@ function App() {
       </header>
       <div className={styles.headline}>
         <span>This is</span>
-        <SpinningSelector
-          onMouseDown={(e) => stopSpinner(e, pickRandomOption())}
-          onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}
-          options={randomOptions.concat(Object.values(interactiveOptions))}
-          selected={selected}
-        ></SpinningSelector>
+        <div onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}>
+          <SpinningSelector
+            options={randomOptions.concat(Object.values(interactiveOptions))}
+            onOptionClick={(e) => stopSpinner(e, pickRandomOption())}
+            selected={selected}
+            optionClassName={styles.spinnerOption}
+          ></SpinningSelector>
+        </div>
       </div>
       <main className={styles.main}>
         <section className={styles.aboutMe}>

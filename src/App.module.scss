@@ -62,6 +62,10 @@ $text-colour: white;
   & > span {
     margin-right: 1ch;
   }
+
+  .spinnerOption {
+    cursor: pointer;
+  }
 }
 
 .main {
