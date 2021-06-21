@@ -1,12 +1,11 @@
 import SpinningSelector from "./components/SpinningSelector";
 import styles from "./App.module.scss";
-import { useState, MouseEvent } from "react";
+import { useEffect, useRef, useState, MouseEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
 const randomOptions = [
-  "my website",
   "in progress",
   "a test",
   "silly",
@@ -21,14 +20,24 @@ const interactiveOptions = {
   name: "my name",
   email: "my email",
   linkedin: "my LinkedIn",
+  website: "my website",
 };
 
 function App() {
-  const [selected, setSelected] = useState<string | undefined>(undefined);
+  const [selected, setSelected] = useState<string | undefined>(interactiveOptions.website);
+  const timeoutComplete = useRef(false);
 
   const spinSpinner = () => {
-    setSelected(undefined);
+    if (timeoutComplete.current) {
+      setSelected(undefined);
+    }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      timeoutComplete.current = true;
+    }, 3000);
+  });
 
   const stopSpinner = (e: MouseEvent, value: string) => {
     e.stopPropagation();
