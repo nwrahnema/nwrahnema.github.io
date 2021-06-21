@@ -4,25 +4,25 @@ import { useEffect, MouseEvent } from "react";
 import { getXRotation } from "../utils";
 
 type Props = {
+  options: string[];
   selected?: string;
   spinSpeed?: number;
-  onMouseDown?: (e: MouseEvent) => void;
-  onMouseMove?: (e: MouseEvent) => void;
-  options: string[];
+  onOptionClick?: (e: MouseEvent, option: string) => void;
+  optionClassName?: string;
 };
 
 const SpinningSelector = ({
+  options,
   selected,
   spinSpeed = 10,
-  onMouseDown,
-  onMouseMove,
-  options,
+  onOptionClick,
+  optionClassName,
 }: Props) => {
   const { ref, animate, getAnimation } = useWebAnimations<HTMLDivElement>({
     onFinish: ({ animate, animation }) => {
       const curAnimation = getAnimation();
-      // Chain spin animation to the end of startSpin animation only if it has not been
-      // replaced by another animation
+      /** Chain spin animation to the end of startSpin animation only if it has not been
+          replaced by another animation **/
       if (
         animation.id === "startSpin" &&
         curAnimation?.id === "startSpin" &&
@@ -86,15 +86,16 @@ const SpinningSelector = ({
   return (
     <div
       className={styles.container}
-      onMouseMove={onMouseMove}
       style={{ "--spin-speed": spinSpeed, "--num-options": options.length }}
     >
       <div className={styles.optionsList} ref={ref}>
         {options.map((option, i) => (
           <div
             key={i}
-            className={styles.option}
-            onMouseDown={onMouseDown}
+            className={`${styles.option} ${optionClassName}`}
+            onMouseDown={(e) => {
+              onOptionClick?.(e, option);
+            }}
             style={{ "--spin-index": i }}
           >
             {option}
