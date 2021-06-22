@@ -33,10 +33,12 @@ function App() {
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       timeoutComplete.current = true;
+      spinSpinner();
     }, 3000);
-  });
+    return () => clearTimeout(timeout);
+  }, []);
 
   const stopSpinner = (e: MouseEvent, value: string) => {
     e.stopPropagation();
