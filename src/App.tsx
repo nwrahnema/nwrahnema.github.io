@@ -33,10 +33,12 @@ function App() {
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       timeoutComplete.current = true;
+      spinSpinner();
     }, 3000);
-  });
+    return () => clearTimeout(timeout);
+  }, []);
 
   const stopSpinner = (e: MouseEvent, value: string) => {
     e.stopPropagation();
@@ -87,18 +89,18 @@ function App() {
           </a>
         </div>
       </header>
-      <div className={styles.headline}>
-        <span>This is</span>
-        <div onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}>
-          <SpinningSelector
-            options={randomOptions.concat(Object.values(interactiveOptions))}
-            onOptionClick={(e) => stopSpinner(e, pickRandomOption())}
-            selected={selected}
-            optionClassName={styles.spinnerOption}
-          ></SpinningSelector>
-        </div>
-      </div>
       <main className={styles.main}>
+        <h1 className={styles.headline}>
+          <span>This is</span>
+          <div onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}>
+            <SpinningSelector
+              options={randomOptions.concat(Object.values(interactiveOptions))}
+              onOptionClick={(e) => stopSpinner(e, pickRandomOption())}
+              selected={selected}
+              optionClassName={styles.spinnerOption}
+            ></SpinningSelector>
+          </div>
+        </h1>
         <section className={styles.aboutMe}>
           <h2>About Me</h2>
           <p>
@@ -109,6 +111,7 @@ function App() {
             with a Bachelor's of Computer Science.
           </p>
         </section>
+        <section className={styles.forest}></section>
       </main>
     </div>
   );

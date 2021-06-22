@@ -88,7 +88,7 @@ const SpinningSelector = ({
       className={styles.container}
       style={{ "--spin-speed": spinSpeed, "--num-options": options.length }}
     >
-      <div className={styles.optionsList} ref={ref}>
+      <div className={styles.optionsList} ref={ref} role="listbox">
         {options.map((option, i) => (
           <div
             key={i}
@@ -97,6 +97,8 @@ const SpinningSelector = ({
               onOptionClick?.(e, option);
             }}
             style={{ "--spin-index": i }}
+            aria-selected={option === selected ? "true" : "false"}
+            role="option"
           >
             {option}
           </div>

@@ -1,35 +1,30 @@
+:root {
+  --header-height: 5rem;
+}
+
 $link-colour: rgb(17, 141, 223);
 $background-colour: rgb(40, 44, 52);
 $text-colour: white;
 
 .page {
-  display: grid;
-  grid-template-areas:
-    ".       header  ."
-    "landing landing landing"
-    "main    main    main";
-  grid-template-columns: 10rem 1fr 10rem;
-  grid-template-rows: 5rem calc(100vh - 5rem) 1fr;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   color: $text-colour;
   background-color: $background-colour;
-}
-
-@media only screen and (max-width: 900px) {
-  .page {
-    grid-template-columns: 1rem 1fr 1rem;
-  }
 }
 
 .header {
   position: sticky;
   top: 0;
-  grid-area: header;
+  height: var(--header-height);
+  margin: 0 10rem;
   font-size: clamp(1rem, 3vw, 1.5rem);
   white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  z-index: 2;
+  z-index: 99;
 
   a {
     color: inherit;
@@ -45,47 +40,61 @@ $text-colour: white;
   }
 }
 
-.headline {
-  grid-area: landing;
-  align-self: center;
-  justify-self: center;
-  display: flex;
-  align-items: center;
-  position: sticky;
-  top: 1.5em;
-  white-space: nowrap;
-  font-size: clamp(1.7rem, 6vw, 3rem);
-  padding: 0.5em;
-  background: $background-colour;
-  z-index: 99;
-
-  & > span {
-    margin-right: 1ch;
-  }
-
-  .spinnerOption {
-    cursor: pointer;
+@media only screen and (max-width: 900px) {
+  .header {
+    margin: 0 1rem;
   }
 }
 
 .main {
-  grid-area: main;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
+  display: grid;
+  grid-template-areas:
+    "landing"
+    "aboutMe"
+    "forest ";
+  grid-template-columns: 1fr;
+  grid-template-rows: calc(100vh - var(--header-height)) 1fr 100vh;
+
+  .headline {
+    grid-area: landing;
+    align-self: center;
+    justify-self: center;
+
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+    font-weight: normal;
+    font-size: clamp(1.7rem, 6vw, 3rem);
+    padding: 0.5em;
+    background: $background-colour;
+    z-index: 99;
+
+    & > span {
+      margin-right: 1ch;
+    }
+
+    .spinnerOption {
+      cursor: pointer;
+    }
+  }
 
   .aboutMe {
+    grid-area: aboutMe;
+    justify-self: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 10em 0;
     width: 60ch;
 
     a {
       color: $link-colour;
       text-decoration: none;
     }
+  }
+
+  .forest {
+    grid-area: forest;
   }
 }
