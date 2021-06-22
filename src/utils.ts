@@ -36,5 +36,9 @@ export function getXRotation<T extends HTMLElement>(ref: RefObject<T>): number |
       console.error(`Transform value ${tr} was not recognized.`)
   }
   
-  return Math.round(Math.atan2(sinx, cosx) * (-180/Math.PI));
+  let radians = Math.atan2(sinx, cosx);
+  if ( radians < 0 ) {
+    radians += (2 * Math.PI);
+  }
+  return Math.round(radians * (180/Math.PI));
 }
