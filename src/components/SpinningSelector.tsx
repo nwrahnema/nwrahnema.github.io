@@ -1,5 +1,5 @@
 import styles from "./SpinningSelector.module.scss";
-import useWebAnimations from "@wellyshen/use-web-animations";
+import useWebAnimations, { AnimateOptions } from "@wellyshen/use-web-animations";
 import { useEffect, MouseEvent } from "react";
 import { getXRotation } from "../utils";
 
@@ -11,6 +11,15 @@ type Props = {
   optionClassName?: string;
 };
 
+function makeAnimation<T extends any[]>(id: string, options: (...args: T) => AnimateOptions) {
+  return {
+    id: id,
+    options: (...args: T) => {
+      return { id: id, ...options(...args) };
+    },
+  };
+}
+
 const SpinningSelector = ({
   options,
   selected,
@@ -18,70 +27,85 @@ const SpinningSelector = ({
   onOptionClick,
   optionClassName,
 }: Props) => {
+  const spin = makeAnimation("spin", () => {
+    return {
+      keyframes: {
+        transform: ["rotateX(0deg)", "rotateX(-360deg)"],
+      },
+      animationOptions: {
+        duration: (1000 * options.length) / spinSpeed,
+        iterations: Infinity,
+      },
+    };
+  });
+
+  const startSpin = makeAnimation("startSpin", (curPosition: number) => {
+    return {
+      keyframes: {
+        transform: [`rotateX(${curPosition}deg)`, "rotateX(-360deg)"],
+      },
+      animationOptions: {
+        duration: (1000 * options.length) / spinSpeed,
+        easing: "ease-in",
+        iterations: 1,
+      },
+    };
+  });
+
+  const stopSpin = makeAnimation("stopSpin", (curPosition: number, endPosition: number) => {
+    return {
+      keyframes: {
+        transform: [`rotateX(${curPosition}deg)`, `rotateX(${endPosition}deg)`],
+      },
+      animationOptions: {
+        duration: (1000 * options.length) / spinSpeed,
+        easing: "ease-out",
+        fill: "forwards",
+        iterations: 1,
+      },
+    };
+  });
+
   const { ref, animate, getAnimation } = useWebAnimations<HTMLDivElement>({
     onFinish: ({ animate, animation }) => {
       const curAnimation = getAnimation();
       /** Chain spin animation to the end of startSpin animation only if it has not been
           replaced by another animation **/
       if (
-        animation.id === "startSpin" &&
-        curAnimation?.id === "startSpin" &&
+        animation.id === startSpin.id &&
+        curAnimation?.id === startSpin.id &&
         curAnimation?.playState === "finished"
       ) {
-        animate({
-          id: "spin",
-          keyframes: {
-            transform: ["rotateX(0deg)", "rotateX(-360deg)"],
-          },
-          animationOptions: {
-            duration: (1000 * options.length) / spinSpeed,
-            iterations: Infinity,
-          },
-        });
+        animate(spin.options());
       }
     },
   });
 
   useEffect(() => {
     const curPosition = getXRotation(ref);
-    if (curPosition !== undefined) {
-      if (selected !== undefined) {
-        const selectedIndex = options.indexOf(selected);
-        if (selectedIndex < 0) {
-          console.error(`Selected value ${selected} is not present in 'options' array.`);
-          return;
-        }
-        let endPosition = (selectedIndex / options.length) * -360;
-        if (endPosition >= curPosition) {
+    if (curPosition === undefined) {
+      return;
+    }
+    if (selected !== undefined) {
+      const selectedIndex = options.indexOf(selected);
+      if (selectedIndex < 0) {
+        console.error(`Selected value ${selected} is not present in 'options' array.`);
+        return;
+      }
+      let endPosition = (selectedIndex / options.length) * -360;
+      if (endPosition !== curPosition) {
+        if (endPosition > curPosition) {
           endPosition -= 360;
         }
-        animate({
-          id: "stopSpin",
-          keyframes: {
-            transform: [`rotateX(${curPosition}deg)`, `rotateX(${endPosition}deg)`],
-          },
-          animationOptions: {
-            duration: (1000 * options.length) / spinSpeed,
-            easing: "ease-out",
-            fill: "forwards",
-            iterations: 1,
-          },
-        });
-      } else {
-        animate({
-          id: "startSpin",
-          keyframes: {
-            transform: [`rotateX(${curPosition}deg)`, "rotateX(-360deg)"],
-          },
-          animationOptions: {
-            duration: (1000 * options.length) / spinSpeed,
-            easing: "ease-in",
-            iterations: 1,
-          },
-        });
+        animate(stopSpin.options(curPosition, endPosition));
+      }
+    } else {
+      const animation = getAnimation();
+      if (animation && animation.id !== startSpin.id && animation.id !== spin.id) {
+        animate(startSpin.options(curPosition));
       }
     }
-  }, [animate, getAnimation, options, spinSpeed, ref, selected]);
+  }, [animate, getAnimation, options, spinSpeed, selected, ref, spin, startSpin, stopSpin]);
 
   return (
     <div

@@ -1,6 +1,7 @@
 import SpinningSelector from "./components/SpinningSelector";
 import styles from "./App.module.scss";
 import { useEffect, useRef, useState, MouseEvent } from "react";
+import { useInView } from "react-intersection-observer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
@@ -24,6 +25,9 @@ const interactiveOptions = {
 
 function App() {
   const [selected, setSelected] = useState<string | undefined>(interactiveOptions.website);
+  const [aboutMeRef, aboutMeInView] = useInView({
+    threshold: 1,
+  });
   const timeoutComplete = useRef(false);
 
   const spinSpinner = () => {
@@ -101,7 +105,10 @@ function App() {
             ></SpinningSelector>
           </div>
         </h1>
-        <section className={styles.aboutMe}>
+        <section
+          className={aboutMeInView ? styles.aboutMe__visible : styles.aboutMe}
+          ref={aboutMeRef}
+        >
           <h2>About Me</h2>
           <p>
             I'm a Software Engineer from Toronto. I graduated from the{" "}
