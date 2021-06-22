@@ -16,11 +16,11 @@ const randomOptions = [
 ];
 
 const interactiveOptions = {
+  website: "my website",
   github: "my GitHub",
   name: "my name",
   email: "my email",
   linkedin: "my LinkedIn",
-  website: "my website",
 };
 
 function App() {
@@ -98,7 +98,7 @@ function App() {
           <span>This is</span>
           <div onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}>
             <SpinningSelector
-              options={randomOptions.concat(Object.values(interactiveOptions))}
+              options={Object.values(interactiveOptions).concat(randomOptions)}
               onOptionClick={(e) => stopSpinner(e, pickRandomOption())}
               selected={selected}
               optionClassName={styles.spinnerOption}

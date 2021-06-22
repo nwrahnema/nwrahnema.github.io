@@ -1,6 +1,6 @@
 import styles from "./SpinningSelector.module.scss";
 import useWebAnimations, { AnimateOptions } from "@wellyshen/use-web-animations";
-import { useCallback, useEffect, useMemo, MouseEvent } from "react";
+import { MouseEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { getXRotation } from "../utils";
 
 type Props = {
@@ -11,14 +11,15 @@ type Props = {
   optionClassName?: string;
 };
 
-function makeAnimation<T extends any[]>(id: string, options: (...args: T) => AnimateOptions) {
-  return {
-    id: id,
-    options: (...args: T) => {
-      return { id: id, ...options(...args) };
-    },
-  };
-}
+const animateOptionsWithId = <T extends any[]>(
+  id: string,
+  options: (...args: T) => AnimateOptions
+) => ({
+  id: id,
+  options: (...args: T) => {
+    return { id: id, ...options(...args) };
+  },
+});
 
 const SpinningSelector = ({
   options,
@@ -29,40 +30,39 @@ const SpinningSelector = ({
 }: Props) => {
   const spin = useMemo(
     () =>
-      makeAnimation("spin", () => {
-        return {
-          keyframes: {
-            transform: ["rotateX(0deg)", "rotateX(-360deg)"],
-          },
-          animationOptions: {
-            duration: (1000 * options.length) / spinSpeed,
-            iterations: Infinity,
-          },
-        };
-      }),
+      animateOptionsWithId("spin", () => ({
+        keyframes: {
+          transform: ["rotateX(0deg)", "rotateX(-360deg)"],
+        },
+        animationOptions: {
+          duration: (1000 * options.length) / spinSpeed,
+          iterations: Infinity,
+        },
+      })),
     [options.length, spinSpeed]
   );
 
   const startSpin = useMemo(
     () =>
-      makeAnimation("startSpin", (curPosition: number) => {
-        return {
-          keyframes: {
-            transform: [`rotateX(${curPosition}deg)`, "rotateX(-360deg)"],
-          },
-          animationOptions: {
-            duration: (1000 * options.length) / spinSpeed,
-            easing: "ease-in",
-            iterations: 1,
-          },
-        };
-      }),
+      animateOptionsWithId("startSpin", (curPosition: number) => ({
+        keyframes: {
+          transform: [`rotateX(${curPosition}deg)`, "rotateX(-360deg)"],
+        },
+        animationOptions: {
+          duration: (1000 * options.length) / spinSpeed,
+          easing: "ease-in",
+          iterations: 1,
+        },
+      })),
     [options.length, spinSpeed]
   );
 
   const stopSpin = useMemo(
     () =>
-      makeAnimation("stopSpin", (curPosition: number, endPosition: number) => {
+      animateOptionsWithId("stopSpin", (curPosition: number, endPosition: number) => {
+        if (endPosition > curPosition) {
+          endPosition -= 360;
+        }
         return {
           keyframes: {
             transform: [`rotateX(${curPosition}deg)`, `rotateX(${endPosition}deg)`],
@@ -80,11 +80,11 @@ const SpinningSelector = ({
 
   const optionToRotation = useCallback(
     (option: string): number => {
-      const selectedIndex = options.indexOf(option);
-      if (selectedIndex < 0) {
-        throw new Error(`Option ${option} is not present in 'options' array.`);
+      const index = options.indexOf(option);
+      if (index < 0) {
+        throw new Error(`Option '${option}' is not present in 'options' array.`);
       }
-      return (selectedIndex / options.length) * -360;
+      return (index / options.length) * -360;
     },
     [options]
   );
@@ -104,28 +104,30 @@ const SpinningSelector = ({
     },
   });
 
+  const stoppingAt = useRef<number | undefined>(0);
+
   useEffect(() => {
     let curPosition = getXRotation(ref);
     if (curPosition === undefined) {
       return;
     }
+    // X rotation is returned counter-clockwise. Make negative to match with CSS animation rules.
     curPosition *= -1;
 
     if (selected !== undefined) {
       let endPosition = optionToRotation(selected);
-      if (endPosition > curPosition) {
-        endPosition -= 360;
-      }
-      if (endPosition !== curPosition) {
+      if (endPosition !== curPosition && endPosition !== stoppingAt.current) {
         animate(stopSpin.options(curPosition, endPosition));
+        stoppingAt.current = endPosition;
       }
     } else {
       const animation = getAnimation();
       if (animation && animation.id !== startSpin.id && animation.id !== spin.id) {
         animate(startSpin.options(curPosition));
+        stoppingAt.current = undefined;
       }
     }
-  }, [animate, getAnimation, options, selected, ref, optionToRotation, spin, startSpin, stopSpin]);
+  }, [animate, getAnimation, selected, ref, optionToRotation, spin, startSpin, stopSpin]);
 
   return (
     <div
@@ -135,14 +137,14 @@ const SpinningSelector = ({
       <div className={styles.optionsList} ref={ref} role="listbox">
         {options.map((option, i) => (
           <div
+            style={{ "--spin-index": i }}
             key={i}
             className={`${styles.option} ${optionClassName}`}
             onMouseDown={(e) => {
               onOptionClick?.(e, option);
             }}
-            style={{ "--spin-index": i }}
-            aria-selected={option === selected ? "true" : "false"}
             role="option"
+            aria-selected={option === selected ? "true" : "false"}
           >
             {option}
           </div>
