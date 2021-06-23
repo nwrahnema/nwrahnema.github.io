@@ -43,6 +43,7 @@ const SpinningSelector = ({
       animateOptionsWithId("spin", () => {
         const startRotation = 0;
         const endRotation = -360;
+
         return {
           keyframes: {
             transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
@@ -67,7 +68,7 @@ const SpinningSelector = ({
           },
           animationOptions: {
             duration: getDuration(startRotation, endRotation),
-            easing: "ease-in",
+            easing: "cubic-bezier(.47,0,.74,.71)", // ease-in animation following a sine wave
             iterations: 1,
           },
         };
@@ -77,19 +78,17 @@ const SpinningSelector = ({
 
   const stopSpin = useMemo(
     () =>
-      animateOptionsWithId("stopSpin", (startRotation: number, endRotation: number) => {
-        return {
-          keyframes: {
-            transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
-          },
-          animationOptions: {
-            duration: getDuration(startRotation, endRotation),
-            easing: "ease-out",
-            fill: "forwards",
-            iterations: 1,
-          },
-        };
-      }),
+      animateOptionsWithId("stopSpin", (startRotation: number, endRotation: number) => ({
+        keyframes: {
+          transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
+        },
+        animationOptions: {
+          duration: getDuration(startRotation, endRotation),
+          easing: "cubic-bezier(.39,.58,.57,1)", // ease-out animation following a sine wave
+          fill: "forwards",
+          iterations: 1,
+        },
+      })),
     [getDuration]
   );
 

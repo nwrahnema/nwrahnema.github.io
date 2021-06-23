@@ -31,7 +31,7 @@ function App() {
       clearTimeout(timeout.current);
     }
     setSelected(value);
-    timeout.current = setTimeout(() => setSelected(undefined), 3000);
+    timeout.current = setTimeout(() => setSelected(undefined), 5000);
   }, []);
 
   const pickRandomOption = useCallback(() => {
@@ -45,7 +45,7 @@ function App() {
       if (selected === undefined) {
         stopSpinner(pickRandomOption());
       }
-    }, 3000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [selected, stopSpinner, pickRandomOption]);
 
