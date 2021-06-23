@@ -6,6 +6,7 @@ import { getXRotation } from "../utils";
 type Props = {
   options: string[];
   selected?: string;
+  // spinSpeed is in units 'options per second'
   spinSpeed?: number;
   onOptionClick?: (e: MouseEvent, option: string) => void;
   optionClassName?: string;
@@ -29,51 +30,67 @@ const SpinningSelector = ({
   onOptionClick,
   optionClassName,
 }: Props) => {
+  const getDuration = useCallback(
+    (startRotation: number, endRotation: number) => {
+      const optionsDistance = options.length * ((endRotation - startRotation) / -360);
+      return (1000 * optionsDistance) / spinSpeed;
+    },
+    [options.length, spinSpeed]
+  );
+
   const spin = useMemo(
     () =>
-      animateOptionsWithId("spin", () => ({
-        keyframes: {
-          transform: ["rotateX(0deg)", "rotateX(-360deg)"],
-        },
-        animationOptions: {
-          duration: (1000 * options.length) / spinSpeed,
-          iterations: Infinity,
-        },
-      })),
-    [options.length, spinSpeed]
+      animateOptionsWithId("spin", () => {
+        const startRotation = 0;
+        const endRotation = -360;
+        return {
+          keyframes: {
+            transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
+          },
+          animationOptions: {
+            duration: getDuration(startRotation, endRotation),
+            iterations: Infinity,
+          },
+        };
+      }),
+    [getDuration]
   );
 
   const startSpin = useMemo(
     () =>
-      animateOptionsWithId("startSpin", (curPosition: number) => ({
-        keyframes: {
-          transform: [`rotateX(${curPosition}deg)`, "rotateX(-360deg)"],
-        },
-        animationOptions: {
-          duration: (1000 * options.length) / spinSpeed,
-          easing: "ease-in",
-          iterations: 1,
-        },
-      })),
-    [options.length, spinSpeed]
+      animateOptionsWithId("startSpin", (startRotation: number) => {
+        const endRotation = -360;
+
+        return {
+          keyframes: {
+            transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
+          },
+          animationOptions: {
+            duration: getDuration(startRotation, endRotation),
+            easing: "ease-in",
+            iterations: 1,
+          },
+        };
+      }),
+    [getDuration]
   );
 
   const stopSpin = useMemo(
     () =>
-      animateOptionsWithId("stopSpin", (curPosition: number, endPosition: number) => {
+      animateOptionsWithId("stopSpin", (startRotation: number, endRotation: number) => {
         return {
           keyframes: {
-            transform: [`rotateX(${curPosition}deg)`, `rotateX(${endPosition}deg)`],
+            transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
           },
           animationOptions: {
-            duration: (1000 * options.length) / spinSpeed,
+            duration: getDuration(startRotation, endRotation),
             easing: "ease-out",
             fill: "forwards",
             iterations: 1,
           },
         };
       }),
-    [options.length, spinSpeed]
+    [getDuration]
   );
 
   const optionToRotation = useCallback(
