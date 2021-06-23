@@ -1,9 +1,8 @@
 $pi: 3.141592653589793;
 
 :root {
-  --spin-speed: 10;
-  --spin-index: 0;
   --num-options: 1;
+  --option-index: 0;
 }
 
 .container {
@@ -25,7 +24,7 @@ $pi: 3.141592653589793;
   line-height: 1em;
   white-space: nowrap;
   backface-visibility: hidden;
-  transform: rotateX(calc(360deg * (var(--spin-index) / var(--num-options))))
+  transform: rotateX(calc(360deg * (var(--option-index) / var(--num-options))))
     translateZ(calc(1em * var(--num-options) / (2 * #{$pi})));
 }
 

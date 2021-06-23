@@ -145,14 +145,11 @@ const SpinningSelector = ({
   }, [animate, getAnimation, selected, ref, optionToRotation, spin.id, startSpin, stopSpin]);
 
   return (
-    <div
-      className={styles.container}
-      style={{ "--spin-speed": spinSpeed, "--num-options": options.length }}
-    >
+    <div className={styles.container} style={{ "--num-options": options.length }}>
       <div className={styles.optionsList} ref={ref} role="listbox">
         {options.map((option, i) => (
           <div
-            style={{ "--spin-index": i }}
+            style={{ "--option-index": i }}
             key={i}
             className={`${styles.option} ${optionClassName}`}
             onMouseDown={(e) => {
