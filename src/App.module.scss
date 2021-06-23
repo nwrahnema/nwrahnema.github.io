@@ -49,12 +49,9 @@ $text-colour: white;
 
 .main {
   display: grid;
-  grid-template-areas:
-    "landing"
-    "aboutMe"
-    "forest ";
+  grid-template-areas: "landing";
   grid-template-columns: 1fr;
-  grid-template-rows: calc(100vh - var(--header-height)) 1fr 100vh;
+  grid-template-rows: calc(100vh - var(--header-height));
 
   .headline {
     grid-area: landing;
@@ -79,30 +76,5 @@ $text-colour: white;
     .spinnerOption {
       cursor: pointer;
     }
-  }
-
-  .aboutMe {
-    grid-area: aboutMe;
-    justify-self: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 60ch;
-    opacity: 0;
-    transition: opacity 1s;
-
-    a {
-      color: $link-colour;
-      text-decoration: none;
-    }
-
-    &__visible {
-      @extend .aboutMe;
-      opacity: 1;
-    }
-  }
-
-  .forest {
-    grid-area: forest;
   }
 }
