@@ -60,7 +60,7 @@ const SpinningSelector = ({
   const stopSpin = useMemo(
     () =>
       animateOptionsWithId("stopSpin", (curPosition: number, endPosition: number) => {
-        if (endPosition > curPosition) {
+        if (endPosition >= curPosition) {
           endPosition -= 360;
         }
         return {
@@ -122,7 +122,7 @@ const SpinningSelector = ({
       }
     } else {
       const animation = getAnimation();
-      if (animation && animation.id !== startSpin.id && animation.id !== spin.id) {
+      if (!animation || (animation.id !== startSpin.id && animation.id !== spin.id)) {
         animate(startSpin.options(curPosition));
         stoppingAt.current = undefined;
       }

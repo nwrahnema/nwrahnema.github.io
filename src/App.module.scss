@@ -1,9 +1,9 @@
 :root {
-  --header-height: 5rem;
+  --header-height: 4rem;
 }
 
 $link-colour: rgb(17, 141, 223);
-$background-colour: rgb(40, 44, 52);
+$background-colour: rgb(27, 29, 30);
 $text-colour: white;
 
 .page {
@@ -18,8 +18,9 @@ $text-colour: white;
   position: sticky;
   top: 0;
   height: var(--header-height);
-  margin: 0 10rem;
-  font-size: clamp(1rem, 3vw, 1.5rem);
+  padding: 0 10rem;
+  background: rgba(black, 0.1);
+  font-size: clamp(1rem, 3vw, 1.3rem);
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -42,7 +43,7 @@ $text-colour: white;
 
 @media only screen and (max-width: 900px) {
   .header {
-    margin: 0 1rem;
+    padding: 0 1rem;
   }
 }
 
