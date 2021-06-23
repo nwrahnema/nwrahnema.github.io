@@ -1,6 +1,6 @@
 import SpinningSelector from "./components/SpinningSelector";
 import styles from "./App.module.scss";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
@@ -29,11 +29,15 @@ function App() {
     threshold: 0.5,
     triggerOnce: true,
   });
+  const timeout = useRef<NodeJS.Timeout>();
 
-  const stopSpinner = (value: string) => {
+  const stopSpinner = useCallback((value: string) => {
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
     setSelected(value);
-    setTimeout(() => setSelected(undefined), 3000);
-  };
+    timeout.current = setTimeout(() => setSelected(undefined), 3000);
+  }, []);
 
   const pickRandomOption = useCallback(() => {
     const randomOptionsDiff = randomOptions.filter((value) => value !== selected);
@@ -48,7 +52,7 @@ function App() {
       }
     }, 3000);
     return () => clearInterval(interval);
-  }, [selected, pickRandomOption]);
+  }, [selected, stopSpinner, pickRandomOption]);
 
   return (
     <div className={styles.page}>
