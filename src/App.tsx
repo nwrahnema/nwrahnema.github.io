@@ -1,6 +1,6 @@
 import SpinningSelector from "./components/SpinningSelector";
 import styles from "./App.module.scss";
-import { useEffect, useRef, useState, MouseEvent } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
@@ -24,44 +24,39 @@ const interactiveOptions = {
 };
 
 function App() {
-  const [selected, setSelected] = useState<string | undefined>(interactiveOptions.website);
+  const [selected, setSelected] = useState<string | undefined>(undefined);
   const [aboutMeRef, aboutMeInView] = useInView({
-    threshold: 1,
+    threshold: 0.5,
+    triggerOnce: true,
   });
-  const timeoutComplete = useRef(false);
 
-  const spinSpinner = () => {
-    if (timeoutComplete.current) {
-      setSelected(undefined);
-    }
-  };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      timeoutComplete.current = true;
-      spinSpinner();
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  const stopSpinner = (e: MouseEvent, value: string) => {
-    e.stopPropagation();
+  const stopSpinner = (value: string) => {
     setSelected(value);
+    setTimeout(() => setSelected(undefined), 3000);
   };
 
-  const pickRandomOption = () => {
+  const pickRandomOption = useCallback(() => {
     const randomOptionsDiff = randomOptions.filter((value) => value !== selected);
 
     return randomOptionsDiff[Math.floor(Math.random() * randomOptionsDiff.length)];
-  };
+  }, [selected]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (selected === undefined) {
+        stopSpinner(pickRandomOption());
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [selected, pickRandomOption]);
 
   return (
-    <div className={styles.page} onMouseMove={spinSpinner}>
+    <div className={styles.page}>
       <header className={styles.header}>
         <a
           className={styles.title}
           href="/"
-          onMouseMove={(e) => stopSpinner(e, interactiveOptions.name)}
+          onMouseEnter={() => stopSpinner(interactiveOptions.name)}
         >
           Nima Rahnema
         </a>
@@ -69,7 +64,7 @@ function App() {
           <a
             href="mailto:nwrahnema@gmail.com"
             title="Email"
-            onMouseMove={(e) => stopSpinner(e, interactiveOptions.email)}
+            onMouseEnter={() => stopSpinner(interactiveOptions.email)}
           >
             <FontAwesomeIcon icon={faEnvelope} />
           </a>
@@ -78,7 +73,7 @@ function App() {
             target="_blank"
             rel="noopener noreferrer"
             title="GitHub"
-            onMouseMove={(e) => stopSpinner(e, interactiveOptions.github)}
+            onMouseEnter={() => stopSpinner(interactiveOptions.github)}
           >
             <FontAwesomeIcon icon={faGithub} />
           </a>
@@ -87,7 +82,7 @@ function App() {
             target="_blank"
             rel="noopener noreferrer"
             title="LinkedIn"
-            onMouseMove={(e) => stopSpinner(e, interactiveOptions.linkedin)}
+            onMouseEnter={() => stopSpinner(interactiveOptions.linkedin)}
           >
             <FontAwesomeIcon icon={faLinkedin} />
           </a>
@@ -96,14 +91,12 @@ function App() {
       <main className={styles.main}>
         <h1 className={styles.headline}>
           <span>This is</span>
-          <div onMouseMove={(e) => stopSpinner(e, selected ?? pickRandomOption())}>
-            <SpinningSelector
-              options={Object.values(interactiveOptions).concat(randomOptions)}
-              onOptionClick={(e) => stopSpinner(e, pickRandomOption())}
-              selected={selected}
-              optionClassName={styles.spinnerOption}
-            ></SpinningSelector>
-          </div>
+          <SpinningSelector
+            options={Object.values(interactiveOptions).concat(randomOptions)}
+            onOptionClick={() => stopSpinner(pickRandomOption())}
+            selected={selected}
+            optionClassName={styles.spinnerOption}
+          ></SpinningSelector>
         </h1>
         <section
           className={aboutMeInView ? styles.aboutMe__visible : styles.aboutMe}

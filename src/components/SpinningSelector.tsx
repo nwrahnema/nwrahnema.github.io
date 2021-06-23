@@ -16,9 +16,10 @@ const animateOptionsWithId = <T extends any[]>(
   options: (...args: T) => AnimateOptions
 ) => ({
   id: id,
-  options: (...args: T) => {
-    return { id: id, ...options(...args) };
-  },
+  options: (...args: T) => ({
+    id: id,
+    ...options(...args),
+  }),
 });
 
 const SpinningSelector = ({
@@ -60,9 +61,6 @@ const SpinningSelector = ({
   const stopSpin = useMemo(
     () =>
       animateOptionsWithId("stopSpin", (curPosition: number, endPosition: number) => {
-        if (endPosition >= curPosition) {
-          endPosition -= 360;
-        }
         return {
           keyframes: {
             transform: [`rotateX(${curPosition}deg)`, `rotateX(${endPosition}deg)`],
@@ -93,7 +91,7 @@ const SpinningSelector = ({
     onFinish: ({ animate, animation }) => {
       const curAnimation = getAnimation();
       /** Chain spin animation to the end of startSpin animation only if it has not been
-          replaced by another animation **/
+          overridden by another animation **/
       if (
         animation.id === startSpin.id &&
         curAnimation?.id === startSpin.id &&
@@ -115,7 +113,7 @@ const SpinningSelector = ({
     curPosition *= -1;
 
     if (selected !== undefined) {
-      let endPosition = optionToRotation(selected);
+      let endPosition = optionToRotation(selected) - 360;
       if (endPosition !== curPosition && endPosition !== stoppingAt.current) {
         animate(stopSpin.options(curPosition, endPosition));
         stoppingAt.current = endPosition;
@@ -127,7 +125,7 @@ const SpinningSelector = ({
         stoppingAt.current = undefined;
       }
     }
-  }, [animate, getAnimation, selected, ref, optionToRotation, spin, startSpin, stopSpin]);
+  }, [animate, getAnimation, selected, ref, optionToRotation, spin.id, startSpin, stopSpin]);
 
   return (
     <div

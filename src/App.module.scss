@@ -19,7 +19,7 @@ $text-colour: white;
   top: 0;
   height: var(--header-height);
   padding: 0 10rem;
-  background: rgba(black, 0.1);
+  background: $background-colour;
   font-size: clamp(1rem, 3vw, 1.3rem);
   white-space: nowrap;
   display: flex;
@@ -54,7 +54,7 @@ $text-colour: white;
     "aboutMe"
     "forest ";
   grid-template-columns: 1fr;
-  grid-template-rows: calc(100vh - var(--header-height)) 1fr 100vh;
+  grid-template-rows: calc(100vh - var(--header-height)) 50vh 100vh;
 
   .headline {
     grid-area: landing;
@@ -63,8 +63,6 @@ $text-colour: white;
 
     display: flex;
     align-items: center;
-    position: sticky;
-    top: 0;
     white-space: nowrap;
     font-weight: normal;
     font-size: clamp(1.7rem, 6vw, 3rem);
@@ -83,6 +81,7 @@ $text-colour: white;
 
   .aboutMe {
     grid-area: aboutMe;
+    align-self: center;
     justify-self: center;
     display: flex;
     flex-direction: column;
