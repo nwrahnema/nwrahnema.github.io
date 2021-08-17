@@ -106,7 +106,7 @@ function useRotationAnimation<T extends HTMLElement>(rotationLength: number): Re
 
   const stoppingAt = useRef<number | undefined>(0);
 
-  const rotate = () => {
+  const rotate = useCallback(() => {
     const curRotation = getXRotation(ref);
     if (curRotation === undefined) {
       return;
@@ -117,19 +117,22 @@ function useRotationAnimation<T extends HTMLElement>(rotationLength: number): Re
       animate(startSpin.options(curRotation));
       stoppingAt.current = undefined;
     }
-  };
+  }, [animate, getAnimation, ref, spin.id, startSpin]);
 
-  const stopRotate = (endRotation: number) => {
-    const curRotation = getXRotation(ref);
-    if (curRotation === undefined) {
-      return;
-    }
+  const stopRotate = useCallback(
+    (endRotation: number) => {
+      const curRotation = getXRotation(ref);
+      if (curRotation === undefined) {
+        return;
+      }
 
-    if (endRotation !== curRotation && endRotation !== stoppingAt.current) {
-      animate(stopSpin.options(curRotation, endRotation));
-      stoppingAt.current = endRotation;
-    }
-  };
+      if (endRotation !== curRotation && endRotation !== stoppingAt.current) {
+        animate(stopSpin.options(curRotation, endRotation));
+        stoppingAt.current = endRotation;
+      }
+    },
+    [animate, ref, stopSpin]
+  );
 
   return { ref, rotate, stopRotate };
 }
