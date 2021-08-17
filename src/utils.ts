@@ -40,5 +40,5 @@ export function getXRotation<T extends HTMLElement>(ref: RefObject<T>): number |
   if (radians < 0) {
     radians += 2 * Math.PI;
   }
-  return Math.round(radians * (180 / Math.PI)) % 360;
+  return -1 * (Math.round(radians * (180 / Math.PI)) % 360);
 }
