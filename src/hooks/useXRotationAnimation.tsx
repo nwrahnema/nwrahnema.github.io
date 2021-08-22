@@ -1,5 +1,5 @@
-import useWebAnimations, { AnimateOptions } from "@wellyshen/use-web-animations";
-import { RefObject, useCallback, useMemo, useRef } from "react";
+import useWebAnimations from "@wellyshen/use-web-animations";
+import { RefObject, useCallback, useRef } from "react";
 import { getXRotation } from "utils";
 
 interface Rotate {
@@ -28,57 +28,6 @@ function useXRotationAnimation<T extends HTMLElement>(rotationLength: number): R
     [rotationLength]
   );
 
-  const spinOptions = useCallback((): AnimateOptions => {
-    const startRotation = 0;
-    const endRotation = -360;
-
-    return {
-      id: SPIN_ID,
-      keyframes: {
-        transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
-      },
-      animationOptions: {
-        duration: getDuration(startRotation, endRotation),
-        iterations: Infinity,
-      },
-    };
-  }, [getDuration]);
-
-  const startSpinOptions = useCallback(
-    (startRotation: number): AnimateOptions => {
-      const endRotation = -360;
-
-      return {
-        id: START_SPIN_ID,
-        keyframes: {
-          transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
-        },
-        animationOptions: {
-          duration: getDuration(startRotation, endRotation),
-          easing: "cubic-bezier(.47,0,.74,.71)", // ease-in animation following a sine wave
-          iterations: 1,
-        },
-      };
-    },
-    [getDuration]
-  );
-
-  const stopSpinOptions = useCallback(
-    (startRotation: number, endRotation: number): AnimateOptions => ({
-      id: STOP_SPIN_ID,
-      keyframes: {
-        transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
-      },
-      animationOptions: {
-        duration: getDuration(startRotation, endRotation),
-        easing: "cubic-bezier(.39,.58,.57,1)", // ease-out animation following a sine wave
-        fill: "forwards",
-        iterations: 1,
-      },
-    }),
-    [getDuration]
-  );
-
   const { ref, animate, getAnimation } = useWebAnimations<T>({
     onFinish: ({ animate, animation }) => {
       const curAnimation = getAnimation();
@@ -89,7 +38,19 @@ function useXRotationAnimation<T extends HTMLElement>(rotationLength: number): R
         curAnimation?.id === START_SPIN_ID &&
         curAnimation?.playState === "finished"
       ) {
-        animate(spinOptions());
+        const startRotation = 0;
+        const endRotation = -360;
+
+        animate({
+          id: SPIN_ID,
+          keyframes: {
+            transform: [`rotateX(${startRotation}deg)`, `rotateX(${endRotation}deg)`],
+          },
+          animationOptions: {
+            duration: getDuration(startRotation, endRotation),
+            iterations: Infinity,
+          },
+        });
       }
     },
   });
@@ -104,10 +65,22 @@ function useXRotationAnimation<T extends HTMLElement>(rotationLength: number): R
 
     const animation = getAnimation();
     if (!animation || (animation.id !== START_SPIN_ID && animation.id !== SPIN_ID)) {
-      animate(startSpinOptions(curRotation));
+      const endRotation = -360;
+      animate({
+        id: START_SPIN_ID,
+        keyframes: {
+          transform: [`rotateX(${curRotation}deg)`, `rotateX(${endRotation}deg)`],
+        },
+        animationOptions: {
+          duration: getDuration(curRotation, endRotation),
+          easing: "cubic-bezier(.47,0,.74,.71)", // ease-in animation following a sine wave
+          iterations: 1,
+        },
+      });
+
       stoppingAt.current = null;
     }
-  }, [animate, getAnimation, ref, startSpinOptions]);
+  }, [animate, getAnimation, getDuration, ref]);
 
   const stopRotate = useCallback(
     (endRotation: number) => {
@@ -117,11 +90,23 @@ function useXRotationAnimation<T extends HTMLElement>(rotationLength: number): R
       }
 
       if (endRotation !== curRotation && endRotation !== stoppingAt.current) {
-        animate(stopSpinOptions(curRotation, endRotation));
+        animate({
+          id: STOP_SPIN_ID,
+          keyframes: {
+            transform: [`rotateX(${curRotation}deg)`, `rotateX(${endRotation}deg)`],
+          },
+          animationOptions: {
+            duration: getDuration(curRotation, endRotation),
+            easing: "cubic-bezier(.39,.58,.57,1)", // ease-out animation following a sine wave
+            fill: "forwards",
+            iterations: 1,
+          },
+        });
+
         stoppingAt.current = endRotation;
       }
     },
-    [animate, ref, stopSpinOptions]
+    [animate, getDuration, ref]
   );
 
   return { ref, rotate, stopRotate };

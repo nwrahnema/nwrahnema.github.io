@@ -1,5 +1,5 @@
 import styles from "./SpinningSelector.module.scss";
-import useRotationAnimation from "hooks/useXRotationAnimation";
+import useXRotationAnimation from "hooks/useXRotationAnimation";
 import { MouseEvent, useEffect } from "react";
 
 type Props = {
@@ -18,7 +18,7 @@ const SpinningSelector = ({
   onOptionClick,
   optionClassName,
 }: Props) => {
-  const { ref, rotate, stopRotate } = useRotationAnimation<HTMLDivElement>(
+  const { ref, rotate, stopRotate } = useXRotationAnimation<HTMLDivElement>(
     options.length / spinSpeed
   );
 
