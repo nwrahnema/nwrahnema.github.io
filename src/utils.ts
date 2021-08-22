@@ -1,8 +1,8 @@
 import { RefObject } from "react";
 
-export function getXRotation<T extends HTMLElement>(ref: RefObject<T>): number | undefined {
+export function getXRotation<T extends HTMLElement>(ref: RefObject<T>): number | null {
   if (ref.current === null) {
-    return undefined;
+    return null;
   }
 
   const st = window.getComputedStyle(ref.current, null);

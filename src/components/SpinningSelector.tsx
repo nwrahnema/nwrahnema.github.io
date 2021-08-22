@@ -1,5 +1,5 @@
 import styles from "./SpinningSelector.module.scss";
-import useRotationAnimation from "../hooks/useRotationAnimation";
+import useRotationAnimation from "hooks/useXRotationAnimation";
 import { MouseEvent, useEffect } from "react";
 
 type Props = {

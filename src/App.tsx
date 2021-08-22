@@ -1,5 +1,5 @@
-import SpinningSelector from "./components/SpinningSelector";
-import Firefly from "./components/Firefly";
+import SpinningSelector from "components/SpinningSelector";
+import Firefly from "components/Firefly";
 import styles from "./App.module.scss";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
